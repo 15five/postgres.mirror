@@ -1,6 +1,14 @@
 FROM postgres:11-alpine
 
-COPY init.sh /docker-entrypoint-initdb.d/init.sh
+RUN apk add --update iputils
 
-CMD ["postgres", "-D", "/var/lib/postgresql/data/datarep"]
+COPY docker-entrypoint.custom.sh /docker-entrypoint.sh
+
+RUN chmod 0755 /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+USER postgres
+
+CMD postgres -D $PGDATA
 
